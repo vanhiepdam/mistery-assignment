@@ -25,10 +25,10 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 from django.template import loader
 
-from backend.views import react
+from backend.views import ReactAppView
 
 urlpatterns = [
-    re_path('^$', react, name='home'),
+    re_path('^$', ReactAppView.as_view(), name='home'),
     path('admin/', admin.site.urls),
     path('api/v1/', include('backend.urls_api_v1'))
 ]
