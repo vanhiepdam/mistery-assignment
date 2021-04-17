@@ -19,23 +19,21 @@ class LoginSerializerV1(serializers.Serializer):
     def validate_email(self, value):
         user, created = User.objects.get_or_create(
             email=value,
-            defaults={
-                'password': DEFAULT_PASSWORD
-            }
         )
         self.user = user
         self.is_new_user = created
         return value
 
     @staticmethod
-    def _validate_info(email, password):
-        user = authenticate(email=email, password=password)
-        if not user:
-            raise ValidationError("Email or password is not correct")
+    def _validate_info(user, password):
+        if user.check_password(password):
+            raise ValidationError(detail="Email or password is not correct")
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
         attrs['user'] = self.user
-        password = DEFAULT_PASSWORD if self.is_new_user else attrs['password']
-        self._validate_info(email=attrs['email'], password=password)
+        if self.is_new_user:
+            self.user.set_password(attrs['password'])
+            self.user.save()
+        self._validate_info(user=self.user, password=attrs['password'])
         return attrs

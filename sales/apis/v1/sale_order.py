@@ -14,6 +14,7 @@ class SaleOrderViewset(
     mixins.UpdateModelMixin
 ):
     queryset = SaleOrder.objects.all().select_related('product', 'user')
+    pagination_class = None
 
     def get_serializer_class(self):
         if self.action == 'list':
