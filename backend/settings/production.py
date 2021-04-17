@@ -8,5 +8,5 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 DATABASES = {
-    'default': dj_database_url.config(env='HEROKU_POSTGRESQL_GREEN_URL')
+    'default': dj_database_url.config(env='HEROKU_POSTGRESQL_GRAY_URL')
 }
