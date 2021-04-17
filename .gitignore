@@ -24,3 +24,4 @@ virtualenv/
 package-lock.json
 *.local
 *.env.*
+db.sqlite3
