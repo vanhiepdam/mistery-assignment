@@ -1,0 +1,8 @@
+# -*- coding: utf-8 -*-
+from django.db import models
+
+from backend.models import TrackingAbstractModel
+
+
+class Country(TrackingAbstractModel):
+    name = models.CharField(max_length=500)
