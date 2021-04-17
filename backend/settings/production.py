@@ -3,7 +3,6 @@ import dj_database_url
 
 from .base import *
 
-CORS_ALLOW_ALL_ORIGINS = True
-DATABASES = {
-    'default': dj_database_url.config(env='HEROKU_POSTGRESQL_GREEN_URL')
-}
+CORS_ALLOWED_ORIGINS = [
+    'https://mistery-assignment.herokuapp.com/'
+]
