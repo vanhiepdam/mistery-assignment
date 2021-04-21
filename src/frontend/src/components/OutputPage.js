@@ -85,7 +85,7 @@ const OutputPage = ({ handleReset, userInformation, countryList }) => {
             },
             mostRevenueEarningProduct: {
               name:
-                salesStatistics.highest_revenue_sale_for_current_user.sale_id,
+                salesStatistics.highest_revenue_sale_for_current_user.product_name,
               revenue:
                 salesStatistics.highest_revenue_sale_for_current_user.revenue,
             },

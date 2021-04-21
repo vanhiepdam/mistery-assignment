@@ -2,7 +2,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from sales.services.sale_order import SaleOrderService
+from sales.services.v1.sale_order import SaleOrderService
 
 
 class SaleStatisticViewset(viewsets.GenericViewSet):

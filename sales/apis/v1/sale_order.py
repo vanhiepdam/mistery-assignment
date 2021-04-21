@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+from django.db import transaction
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 
 from sales.models import SaleOrder
 from sales.serializers.v1.sale_order import ListSaleOrderSerializerV1, CreateUpdateSaleOrderSerializerV1
-from sales.services.product import ProductService
+from sales.services.v1.product import ProductService
 
 
 class SaleOrderViewset(
@@ -13,8 +14,13 @@ class SaleOrderViewset(
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin
 ):
-    queryset = SaleOrder.objects.all().select_related('product', 'user')
     pagination_class = None
+
+    def get_queryset(self):
+        return SaleOrder.objects.filter(user=self.request.user).select_related(
+            'product',
+            'user'
+        )
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -33,5 +39,7 @@ class SaleOrderViewset(
         else:
             serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        with transaction.atomic():
+            request.user.clear_sale_order_data()
+            serializer.save()
         return Response(status.HTTP_201_CREATED)

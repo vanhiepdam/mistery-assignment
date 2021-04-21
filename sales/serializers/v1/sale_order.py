@@ -31,7 +31,9 @@ class CreateUpdateSaleOrderSerializerV1(serializers.ModelSerializer):
     revenue = serializers.FloatField()
     sales_number = serializers.IntegerField()
     date = serializers.DateField()
-    user_id = serializers.IntegerField()
+
+    # read only
+    user_id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = SaleOrder
@@ -43,8 +45,9 @@ class CreateUpdateSaleOrderSerializerV1(serializers.ModelSerializer):
             'user_id',
         )
 
-    def validate_user_id(self, value):
-        return self.context['request'].user.id
-
     def validate_product(self, value):
         return self.context['product_name_map'].get(value)
+
+    def create(self, validated_data):
+        validated_data['user_id'] = self.context['request'].user.id
+        return super().create(validated_data)

@@ -75,3 +75,6 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     @classmethod
     def get_user_from_email(cls, email):
         return cls.objects.filter(email=email).first()
+
+    def clear_sale_order_data(self):
+        self.sale_orders.all().delete()
