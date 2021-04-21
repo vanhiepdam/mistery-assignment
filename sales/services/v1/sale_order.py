@@ -21,41 +21,50 @@ class SaleOrderService:
 
     @staticmethod
     def get_highest_sale_revenue_for_user(user, sale_orders):
-        sale_order = sale_orders.filter(user=user).order_by('-revenue').first()
+        """
+        Get highest revenue product
+        """
+        sale_order = sale_orders.filter(user=user).values(
+            'product__name'
+        ).annotate(
+            total_revenue=Sum('revenue')
+        ).order_by('-total_revenue').first()
         return {
-            'product_name': sale_order.product.name,
-            'revenue': sale_order.revenue
+            'product_name': sale_order['product__name'],
+            'revenue': sale_order['total_revenue']
         }
 
     @staticmethod
     def get_highest_product_sale_revenue_for_user(user, sale_orders):
-        sale_order = sale_orders.filter(user=user).annotate(
-            product_price=ExpressionWrapper(
-                F('revenue') / F('sales_number'),
-                output_field=FloatField()
-            )
-        ).order_by(
-            '-product_price'
+        """
+        Get highest revenue sale
+        """
+        sale_order = sale_orders.filter(user=user).order_by(
+            '-revenue'
         ).first()
         return {
             'product_name': sale_order.product.name,
-            'price': sale_order.product_price
+            'price': sale_order.revenue
         }
 
     @staticmethod
     def get_highest_sale_number_for_user(user, sale_orders):
-        sale_order = sale_orders.filter(user=user).order_by('-sales_number').first()
+        sale_order = sale_orders.filter(user=user).values(
+            'product__name'
+        ).annotate(
+            total_sales_number=Sum('sales_number'),
+        ).order_by('-total_sales_number').first()
         return {
-            'product_name': sale_order.product.name,
-            'price': sale_order.revenue
+            'product_name': sale_order['product__name'],
+            'price': sale_order['total_sales_number']
         }
 
     def get_statistic_by_user(self, user):
         sale_orders = SaleOrder.objects.all().select_related('product', 'user')
         average_sales_for_current_user = self.get_average_sales_by_user(user, sale_orders)
         average_sales_for_all_users = self.get_average_sales_by_all_users(sale_orders)
-        highest_revenue_sale_for_current_user = self.get_highest_sale_revenue_for_user(user, sale_orders)
         product_highest_revenue_for_current_user = self.get_highest_product_sale_revenue_for_user(user, sale_orders)
+        highest_revenue_sale_for_current_user = self.get_highest_sale_revenue_for_user(user, sale_orders)
         product_highest_sales_number_for_current_user = self.get_highest_sale_number_for_user(user, sale_orders)
         return {
             'average_sales_for_current_user': average_sales_for_current_user,
