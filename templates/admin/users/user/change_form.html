@@ -3,6 +3,7 @@
 {% block content %}
     {% csrf_token %}
     <form action="/admin/users/user/create-update/" id="create_update" method="post">
+        {% csrf_token %}
         {{ form }}
         <input type="submit" formtarget="create_update" value="Save">
     </form>
