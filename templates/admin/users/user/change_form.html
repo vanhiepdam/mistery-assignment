@@ -1,0 +1,20 @@
+{% extends 'admin/change_form.html' %}
+{% load i18n admin_urls admin_modify %}
+{% block content %}
+    {% csrf_token %}
+    <form action="/admin/users/user/create-update/" id="create_update" method="post">
+        {{ form }}
+        <input type="submit" formtarget="create_update" value="Save">
+    </form>
+
+    {% if object_id %}
+        <form action="/admin/users/user/clear-sale-information/" id="clear_sale_information" method="post">
+            {% csrf_token %}
+            <input type="text" name="user_id" value="{{ object_id }}" hidden>
+            <input type="submit" value="Clear user sale information" formtarget="clear_sale_information">
+        </form>
+    {% endif %}
+    {% if not object_id %}
+        <b>Function "Clear sale information" will be available after user was created</b>
+    {% endif %}
+{% endblock %}

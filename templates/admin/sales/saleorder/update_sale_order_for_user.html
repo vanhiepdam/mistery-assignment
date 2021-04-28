@@ -1,0 +1,9 @@
+{% extends 'admin/change_form.html' %}
+{% load static i18n %}
+{% block content %}
+    <form action="/admin/sales/saleorder/update-sale-order-for-user/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Save">
+    </form>
+{% endblock %}

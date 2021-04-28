@@ -8,3 +8,6 @@ from locations.models.country import Country
 class City(TrackingAbstractModel):
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='cities')
     name = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.name

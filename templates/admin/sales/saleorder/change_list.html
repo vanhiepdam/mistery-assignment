@@ -1,0 +1,11 @@
+{% extends 'admin/change_list.html' %}
+
+{% block object-tools %}
+    <ul class="object-tools">
+         <li><a href="/admin/sales/saleorder/update-sale-order-for-user/" class="addlink">Update sale order for user</a></li>
+    </ul>
+    <br/>
+    <br/>
+    <br/>
+    {{ block.super }}
+{% endblock %}

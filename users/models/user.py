@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+import csv
+
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager
 )
-from django.db import models
+from django.db import models, transaction
 from backend.models import TrackingAbstractModel, BaseModel
 from locations.models import Country, City
 from users.constants import USER_GENDER_CHOICES
+from io import StringIO
 
 
 class UserManager(BaseUserManager):
@@ -67,14 +71,39 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     def is_admin(self):
         return self.is_superuser and self.is_staff
 
-    def save(self, *args, **kwargs):
-        if not self.check_password(self.password):
-            self.set_password(self.password)
-        return super().save(*args, **kwargs)
-
     @classmethod
     def get_user_from_email(cls, email):
         return cls.objects.filter(email=email).first()
 
     def clear_sale_order_data(self):
         self.sale_orders.all().delete()
+
+    def load_sale_data_from_csv_string(self, csv_string):
+        f = StringIO(csv_string)
+        reader = csv.reader(f, delimiter=',')
+        next(reader)  # ignore first row of csv
+        self.create_sale_order_from_rows(reader)
+
+    def create_sale_order_from_rows(self, rows):
+        """
+        rows is a list of elements
+            date, product name, sales number, revenue
+            All fields are required
+        """
+        from sales.models.sale import SaleOrder
+        from sales.models import Product
+        products_map = {
+            product.name: product.id
+            for product in Product.objects.all()
+        }
+        for date, product, sales_number, revenue in rows:
+            if not products_map.get(product):
+                product_obj = Product.objects.create(name=product)
+                products_map[product] = product_obj.id
+            SaleOrder.objects.create(
+                user=self,
+                date=date,
+                sales_number=sales_number,
+                revenue=revenue,
+                product_id=products_map[product]
+            )
