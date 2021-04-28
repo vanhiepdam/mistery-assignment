@@ -177,3 +177,26 @@ Use these steps to clone from SourceTree, our client for using the repository co
 4. Open the directory you just created to see your repository’s files.
 
 Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+
+
+# TODO APP
+I tried to integrated this app to django admin instead of writing new views
+
+Login: https://mistery-assignment.herokuapp.com/admin/
+Acc: admin@example.com/admin1234
+
+## Create update user
+1. Create
+- Go to: https://mistery-assignment.herokuapp.com/admin/users/user/add/
+- Fill your info 
+- Save
+
+2. Update
+- Go to: https://mistery-assignment.herokuapp.com/admin/users/user/
+- Select user you want to edit
+- Go to detail page of a user: https://mistery-assignment.herokuapp.com/admin/users/user/9/change/
+- Update your info
+- Save
+
+## Create sale order for user
+Link https://mistery-assignment.herokuapp.com/admin/sales/saleorder/update-sale-order-for-user/
