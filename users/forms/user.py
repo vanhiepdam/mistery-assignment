@@ -13,6 +13,8 @@ from users.models import User
 
 class UserAdminForm(forms.Form):
     initial_id = forms.IntegerField(required=False, widget=forms.HiddenInput())
+    is_superuser = forms.BooleanField(required=False, initial=False, help_text='Make user as admin with all permissions')
+    is_staff = forms.BooleanField(required=False, initial=False, help_text='Make user as admin with specific permissions')
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput(render_value=True))
     password_confirmation = forms.CharField(required=False, widget=forms.PasswordInput())
@@ -25,6 +27,8 @@ class UserAdminForm(forms.Form):
     class Meta:
         fields = (
             'initial_id',
+            'is_superuser',
+            'is_staff',
             'email',
             'password',
             'password_confirmation',
@@ -63,6 +67,8 @@ class UserAdminForm(forms.Form):
             age=self.cleaned_data['age'],
             country=self.cleaned_data['country'],
             city=self.cleaned_data['city'],
+            is_superuser=self.cleaned_data.get('is_superuser', False),
+            is_staff=self.cleaned_data.get('is_staff', False),
         )
         user.set_password(self.cleaned_data['password'])
         user.save()
@@ -76,6 +82,8 @@ class UserAdminForm(forms.Form):
         user.age = self.cleaned_data['age']
         user.country = self.cleaned_data['country']
         user.city = self.cleaned_data['city']
+        user.is_superuser = self.cleaned_data.get('is_superuser', False)
+        user.is_staff = self.cleaned_data.get('is_staff', False)
         if user.password != self.cleaned_data['password']:
             user.set_password(self.cleaned_data['password'])
         user.save()

@@ -23,6 +23,8 @@ class UserAdmin(admin.ModelAdmin):
         if object_id:
             form.initial = {
                 'initial_id': instance.id,
+                'is_superuser': instance.is_superuser,
+                'is_staff': instance.is_staff,
                 'email': instance.email,
                 'password': instance.password,
                 'gender': instance.gender,
